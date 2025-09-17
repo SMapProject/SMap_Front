@@ -1,0 +1,31 @@
+/* 로고 폰트 Zen Dots */
+.zen-dots-regular {
+  font-family: "Zen Dots", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* 폰트 두께 별 */
+@font-face {
+  font-family: "SCDream1";
+  font-weight: normal;
+  src: local("SCDream1"), url("./fonts/SCDream1.otf") format("truetype");
+}
+@font-face {
+  font-family: "SCDream4";
+  font-weight: normal;
+  src: local("SCDream4"), url("./fonts/SCDream4.otf") format("truetype");
+}
+@font-face {
+  font-family: "SCDream6";
+  font-weight: normal;
+  src: local("SCDream6"), url("./fonts/SCDream6.otf") format("truetype");
+}
+@font-face {
+  font-family: "SCDream8";
+  font-weight: normal;
+  src: local("SCDream8"), url("./fonts/SCDream8.otf") format("truetype");
+}
+body {
+    font-family: "SCDream8", sans-serif;
+}
