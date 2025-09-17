@@ -1,8 +1,8 @@
 /* 로고 폰트 Zen Dots */
-.zen-dots-regular {
-  font-family: "Zen Dots", sans-serif;
-  font-weight: 400;
-  font-style: normal;
+@font-face {
+  font-family: "Zen_Dots";
+  font-weight: normal;
+  src: local("Zen_Dots"), url("./fonts/ZenDots-Regular.ttf") format("truetype");
 }
 
 /* 폰트 두께 별 */
@@ -28,4 +28,88 @@
 }
 body {
     font-family: "SCDream8", sans-serif;
+}
+
+/* 로고 */
+.smap-logo {
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+  aspect-ratio: 1 / 1;
+}
+
+/* 로고 글자 */
+.smap-text {
+  margin-left: 10px;
+  margin-bottom: 20px;
+  color: #000000;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  font-family: "Zen_Dots", sans-serif;
+}
+
+/* 로고 배경 */
+.smap-logo-fixed {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 320px;
+  height: 111px;
+  background-color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+.content-area {
+  position: fixed;
+  top: 160px;
+  left: 0;
+  width: 320px;
+  height: calc(100vh - 160px);
+  background-color: #EAEAEA;
+  z-index: 900;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* 체크박스 */
+.crime-category {
+  margin-bottom: 20px;
+}
+
+.crime-category h3 {
+  margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.crime-category label {
+  display: block; 
+  margin-bottom: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.crime-category input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* 지도 */
+#kakao-map {
+  position: absolute;
+  top: 0;
+  left: 320px; 
+  width: 1120px;
+  height: 1024px;
+  z-index: 1;
 }
