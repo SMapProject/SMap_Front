@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import NavBar from "../../components/NavBar.js"; 
+import NavBar from "../../components/NavBar";
 import "../../components/NavBar.css"; 
 import "../../index.css";
 
