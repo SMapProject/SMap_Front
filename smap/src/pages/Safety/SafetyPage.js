@@ -1,30 +1,85 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import NavBar from "../../components/NavBar";
 import "../../components/NavBar.css"; 
 import "../../index.css";
 
-
 const SafetyPage = () => {
+  const [selectedCrimes, setSelectedCrimes] = useState([]); 
+  const [map, setMap] = useState(null);
+  const [markers, setMarkers] = useState([]);
+  const [selectedNews, setSelectedNews] = useState(null);
 
   // 카카오맵
   useEffect(() => {
-  const script = document.createElement("script");
-  script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=5167e7e56369e87754ac0c849f468bce&autoload=false`;
-  document.head.appendChild(script);
+    const script = document.createElement("script");
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=5167e7e56369e87754ac0c849f468bce&libraries=services&autoload=false`;
+    document.head.appendChild(script);
 
-  script.onload = () => {
-    window.kakao.maps.load(() => {
-      const container = document.getElementById("kakao-map");
-      const options = {
-        center: new window.kakao.maps.LatLng(37.5665, 126.9780), // 지도 중심 위치(이거 어디로 할까..)
-        level: 3, // 확대 레벨
-      };
-      new window.kakao.maps.Map(container, options);
-    });
+    script.onload = () => {
+      window.kakao.maps.load(() => {
+        const container = document.getElementById("kakao-map");
+        const options = {
+          center: new window.kakao.maps.LatLng(37.5665, 126.9780), // 서울 중심
+          level: 4,
+        };
+        const createdMap = new window.kakao.maps.Map(container, options);
+        setMap(createdMap);
+      });
+    };
+  }, []);
+
+  // 체크박스
+  const handleCheckboxChange = (e) => {
+    const { value, checked } = e.target;
+    if (checked) {
+      setSelectedCrimes((prev) => [...prev, value]);
+    } else {
+      setSelectedCrimes((prev) => prev.filter((crime) => crime !== value));
+    }
   };
-}, []);
 
+  // DB 가져오기 & 마커 표시
+  useEffect(() => {
+    if (!map) return;
 
+    // 기존 마커 제거
+    markers.forEach((m) => m.setMap(null));
+    setMarkers([]);
+
+    if (selectedCrimes.length === 0) return;
+
+    // ******************* 여기 ********************
+    fetch(`http://127.0.0.1:8000/api/news?crimeTypes=${selectedCrimes.join(",")}`) // 여기 넣 예시야
+      .then((res) => res.json())
+      .then((data) => {
+        data.forEach((item) => {
+          const geocoder = new window.kakao.maps.services.Geocoder();
+
+          // DB에서 주소 문자열로 받음 → 좌표 변환
+          geocoder.addressSearch(item.location, (result, status) => {
+            if (status === window.kakao.maps.services.Status.OK) {
+              const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+
+              const marker = new window.kakao.maps.Marker({
+                map: map,
+                position: coords,
+                title: item.title,
+              });
+
+              // 마커 클릭 → 모달 열기
+              window.kakao.maps.event.addListener(marker, "click", () => {
+                setSelectedNews(item);
+              });
+
+              setMarkers((prev) => [...prev, marker]);
+            } else {
+              console.warn("주소 변환 실패:", item.location);
+            }
+          });
+        });
+      })
+      .catch((err) => console.error("데이터 불러오기 실패:", err));
+  }, [selectedCrimes, map]);
 
   return (
     <div>
@@ -33,41 +88,61 @@ const SafetyPage = () => {
         <img src="/logo/SMap_Logo.png" alt="SMap Logo" className="smap-logo" />
         <div className="smap-text">smap</div>
       </div>
+
       {/* 네비게이션 바 */}
       <NavBar />
-      {/* 범죄 종류 */}
+
+      {/* 범죄 종류 체크박스 */}
       <div className="content-area">
-        <div class="crime-category">
+        <div className="crime-category">
           <h3>개인범죄</h3>
-          <label><input type="checkbox" /> 살인</label>
-          <label><input type="checkbox" /> 상해</label>
-          <label><input type="checkbox" /> 폭행</label>
-          <label><input type="checkbox" /> 강금/약취유인</label>
-          <label><input type="checkbox" /> 사이버 범죄</label>
+          <label><input type="checkbox" value="살인" onChange={handleCheckboxChange}/> 살인</label>
+          <label><input type="checkbox" value="상해" onChange={handleCheckboxChange}/> 상해</label>
+          <label><input type="checkbox" value="폭행" onChange={handleCheckboxChange}/> 폭행</label>
+          <label><input type="checkbox" value="강금/약취유인" onChange={handleCheckboxChange}/> 강금/약취유인</label>
+          <label><input type="checkbox" value="사이버 범죄 사건" onChange={handleCheckboxChange}/> 사이버 범죄</label>
         </div>
 
-        <div class="crime-category">
+        <div className="crime-category">
           <h3>재산범죄</h3>
-          <label><input type="checkbox" /> 강도</label>
-          <label><input type="checkbox" /> 절도</label>
+          <label><input type="checkbox" value="강도" onChange={handleCheckboxChange}/> 강도</label>
+          <label><input type="checkbox" value="절도" onChange={handleCheckboxChange}/> 절도</label>
         </div>
 
-        <div class="crime-category">
+        <div className="crime-category">
           <h3>사회범죄</h3>
-          <label><input type="checkbox" /> 방화/폭발물</label>
-          <label><input type="checkbox" /> 성범죄</label>
+          <label><input type="checkbox" value="방화/폭발물" onChange={handleCheckboxChange}/> 방화/폭발물</label>
+          <label><input type="checkbox" value="성범죄" onChange={handleCheckboxChange}/> 성범죄</label>
         </div>
 
-        <div class="crime-category">
+        <div className="crime-category">
           <h3>특별범죄</h3>
-          <label><input type="checkbox" /> 마약</label>
-          <label><input type="checkbox" /> 가정폭력</label>
-          <label><input type="checkbox" /> 스토킹</label>
-          <label><input type="checkbox" /> 아동청소년보호</label>
+          <label><input type="checkbox" value="마약" onChange={handleCheckboxChange}/> 마약</label>
+          <label><input type="checkbox" value="가정폭력" onChange={handleCheckboxChange}/> 가정폭력</label>
+          <label><input type="checkbox" value="스토킹" onChange={handleCheckboxChange}/> 스토킹</label>
+          <label><input type="checkbox" value="아동청소년보호" onChange={handleCheckboxChange}/> 아동청소년보호</label>
         </div>
       </div>
+
       {/* 지도 */}
-       <div id="kakao-map"></div>
+      <div id="kakao-map"></div>
+
+      {/* 모달 */}
+      {selectedNews && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <button className="modal-close" onClick={() => setSelectedNews(null)}>✖</button>
+            <h2>{selectedNews.title}</h2>
+            <hr />
+            <p>{selectedNews.summary}</p>
+            <p><b>날짜:</b> {selectedNews.crimeDay}</p>
+            <p className="location"><b>위치:</b> {selectedNews.location}</p>
+            <a href={selectedNews.newsLink} target="_blank" rel="noopener noreferrer">
+              관련 뉴스 보기
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
