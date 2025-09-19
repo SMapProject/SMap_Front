@@ -8,6 +8,7 @@
   background-color: #747474;
   overflow: hidden;
   z-index: 1000;
+  position: relative;
 }
 
 .nav-item {
@@ -18,13 +19,46 @@
   color: #ffffff;
   cursor: pointer;
   font-size: 16px;
-  font-weight: 500;
-  transition: background-color 0.2s, color 0.2s;
   font-family: "SCDream4", sans-serif;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  position: relative;
+}
+
+.nav-item:hover {
+  background-color: #444444;
+  font-weight: 700;
 }
 
 .nav-item.active {
   background-color: #000000;
-
+  font-family: "SCDream6", sans-serif;
 }
 
+.nav-item::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 80%;
+  height: 3px;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.nav-item.active::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.nav-item:active {
+  background-color: #333333;
+}
+
+@media (max-width: 360px) {
+  .nav-bar {
+    width: 100%;
+  }
+  .nav-item {
+    font-size: 14px;
+  }
+}
