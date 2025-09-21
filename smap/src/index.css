@@ -12,6 +12,11 @@
   src: local("SCDream1"), url("./fonts/SCDream1.otf") format("truetype");
 }
 @font-face {
+  font-family: "SCDream2";
+  font-weight: normal;
+  src: local("SCDream2"), url("./fonts/SCDream2.otf") format("truetype");
+}
+@font-face {
   font-family: "SCDream4";
   font-weight: normal;
   src: local("SCDream4"), url("./fonts/SCDream4.otf") format("truetype");
@@ -179,3 +184,19 @@ html, body {
   font-size: 20px;
   cursor: pointer;
 }
+
+/* 그래프 영역 */
+.graph-container {
+  margin-left: 400px;
+  overflow: auto;
+}
+
+/* 제목 */
+.graph-title {
+  font-family: "SCDream6", sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+
