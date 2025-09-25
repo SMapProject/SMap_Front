@@ -36,9 +36,6 @@
   font-weight: normal;
   src: local("SCDream8"), url("./fonts/SCDream8.otf") format("truetype");
 }
-body {
-    font-family: "SCDream8", sans-serif;
-}
 
 /* 로고 */
 .smap-logo {
@@ -243,5 +240,106 @@ html, body {
 .line-graph .chartjs-render-monitor {
 }
 
+/* 전체 페이지 레이아웃 */
+body {
+  margin: 0;
+  font-family: "SCDream6", sans-serif;
+  background: #f9f9f9;
+  color: #333;
+}
 
+header {
+  background: #222;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
 
+/* 제보 폼 */
+.report-form-container {
+  margin-left: 360px;
+  padding: 40px;
+  font-family: "SCDream6", sans-serif;
+  height: calc(100vh - 160px);
+  overflow-y: auto;
+}
+
+.report-form-container h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.crime-report-form {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 15px;
+  border: 0.1px solid #000000;
+  background-color: #D9D9D9;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+/* 제출 버튼 */
+.submit-btn {
+  display: block;
+  margin: 30px auto 0;
+  width: 200px;
+  height: 40px;
+  background: #D9D9D9;
+  color: #000000;
+  border: 0.1px solid #000000;
+  border-radius: 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submit-btn:hover {
+  background: #747474;
+}
