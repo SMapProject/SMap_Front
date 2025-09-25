@@ -87,7 +87,9 @@ const Daejeon = () => {
       {/* 그래프 영역 */}
       <div className="graph-container">
         <h2 className="graph-title">대전 범죄 그래프</h2>
+        <div className="chart-container">
         <Bar data={data} options={options} />
+        </div>
       </div>
     </div>
   );

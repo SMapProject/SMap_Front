@@ -210,8 +210,8 @@ html, body {
 
 /* 범죄 그래프 */
 .chart-container {
-  width: 500px;
-  height: 500px;
+  width: 800px;
+  height: 900px;
   margin: 0 auto;
 }
 
