@@ -17,6 +17,11 @@
   src: local("SCDream2"), url("./fonts/SCDream2.otf") format("truetype");
 }
 @font-face {
+  font-family: "SCDream3";
+  font-weight: normal;
+  src: local("SCDream3"), url("./fonts/SCDream3.otf") format("truetype");
+}
+@font-face {
   font-family: "SCDream4";
   font-weight: normal;
   src: local("SCDream4"), url("./fonts/SCDream4.otf") format("truetype");

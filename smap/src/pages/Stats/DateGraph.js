@@ -36,9 +36,11 @@ const DateGraph = () => {
       .then((res) => res.json())
       .then((data) => {
         /*
+        data = 
         { "hour": 0, "rate": 30 },
         { "hour": 3, "rate": 25 },
          ...
+         횟수
         */
         const labels = Array.from({ length: 24 }, (_, i) => i); // 0~23시
         const values = Array(24).fill(0);

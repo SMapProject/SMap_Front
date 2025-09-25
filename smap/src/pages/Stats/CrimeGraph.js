@@ -33,7 +33,7 @@ const CrimeGraph = () => {
         return res.json();
       })
       .then((data) => {
-        // data = { 개인범죄: 12, 재산범죄: 25, 사회범죄: 8, 특별범죄: 5 }
+        // data = { 개인범죄: 12, 재산범죄: 25, 사회범죄: 8, 특별범죄: 5 } %
         setCrimeData(data);
       })
       .catch((err) => {

@@ -14,32 +14,45 @@
 /* 제목 */
 .graph-bar .menu-title {
   background-color: #ccc;
-  padding: 10px 12px;
+  padding: 12px 14px;
   font-weight: bold;
   border: 1px solid #aaa;
   cursor: pointer;
 }
 
-/* 지역 리스트 */
-.graph-bar .region-list {
-  background-color: #eee;
-  border: 1px solid #ccc;
-  border-top: none;
-  padding: 8px 0;
+.graph-bar .menu-title:hover {
+  background-color: #bbb;
 }
 
-/* 리스트*/
-.graph-bar .region-list li {
-  padding: 6px 0;
-  cursor: pointer;
-}
-
-/* active 상태 */
 .graph-bar .menu-title.active {
   background-color: #999;
   color: white;
 }
-.graph-bar .region-list li.active {
-  font-weight: bold;
+
+/* 지역 리스트 */
+.graph-bar .region-list {
+  display: flex;
+  flex-direction: column;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-top: none;
+  padding: 6px 0;
+}
+
+/* 지역 아이템 (심플 리스트 스타일) */
+.graph-bar .region-item {
+  padding: 8px 14px;
+  font-family: "SCDream3", sans-serif;
+  font-size: 14px;
   color: #333;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.graph-bar .region-item:hover {
+  background-color: #ddd;
+}
+
+.graph-bar .region-item.active {
+  color: #2e3b55;
 }
