@@ -3,7 +3,84 @@ import NavBar from "../../components/NavBar";
 import "../../components/NavBar.css"; 
 import "../../index.css";
 
-const TrafficPage = () => {
+const SafetyPage = () => {
+  const [selectedCrimes, setSelectedCrimes] = useState([]); 
+  const [map, setMap] = useState(null);
+  const [markers, setMarkers] = useState([]);
+  const [selectedNews, setSelectedNews] = useState(null);
+
+  // 카카오맵
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=5167e7e56369e87754ac0c849f468bce&libraries=services&autoload=false`;
+    document.head.appendChild(script);
+
+    script.onload = () => {
+      window.kakao.maps.load(() => {
+        const container = document.getElementById("kakao-map");
+        const options = {
+          center: new window.kakao.maps.LatLng(37.5665, 126.9780), // 서울 중심
+          level: 4,
+        };
+        const createdMap = new window.kakao.maps.Map(container, options);
+        setMap(createdMap);
+      });
+    };
+  }, []);
+
+  // 체크박스
+  const handleCheckboxChange = (e) => {
+    const { value, checked } = e.target;
+    if (checked) {
+      setSelectedCrimes((prev) => [...prev, value]);
+    } else {
+      setSelectedCrimes((prev) => prev.filter((crime) => crime !== value));
+    }
+  };
+
+  // DB 가져오기 & 마커 표시
+  useEffect(() => {
+    if (!map) return;
+
+    // 기존 마커 제거
+    markers.forEach((m) => m.setMap(null));
+    setMarkers([]);
+
+    if (selectedCrimes.length === 0) return;
+
+    // ******************* 여기 ********************
+    fetch(`http://127.0.0.1:8000/api/news?crimeTypes=${selectedCrimes.join(",")}`) // 여기 넣 예시야
+      .then((res) => res.json())
+      .then((data) => {
+        data.forEach((item) => {
+          const geocoder = new window.kakao.maps.services.Geocoder();
+
+          // DB에서 주소 문자열로 받음 → 좌표 변환
+          geocoder.addressSearch(item.location, (result, status) => {
+            if (status === window.kakao.maps.services.Status.OK) {
+              const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+
+              const marker = new window.kakao.maps.Marker({
+                map: map,
+                position: coords,
+                title: item.title,
+              });
+
+              // 마커 클릭 → 모달 열기
+              window.kakao.maps.event.addListener(marker, "click", () => {
+                setSelectedNews(item);
+              });
+
+              setMarkers((prev) => [...prev, marker]);
+            } else {
+              console.warn("주소 변환 실패:", item.location);
+            }
+          });
+        });
+      })
+      .catch((err) => console.error("데이터 불러오기 실패:", err));
+  }, [selectedCrimes, map]);
+
   return (
     <div>
       {/* 로고 */}
@@ -17,10 +94,35 @@ const TrafficPage = () => {
 
       {/* 범죄 종류 체크박스 */}
       <div className="content-area">
-        
+        <div className="crime-category">
+          <h3>교통사고</h3>
+          <label><input type="checkbox" value="교통사고" onChange={handleCheckboxChange}/> 교통사고</label>
+          <label><input type="checkbox" value="음주운전" onChange={handleCheckboxChange}/> 음주운전</label>
+          <label><input type="checkbox" value="기타" onChange={handleCheckboxChange}/> 기타</label>
+        </div>
       </div>
+
+      {/* 지도 */}
+      <div id="kakao-map"></div>
+
+      {/* 모달 */}
+      {selectedNews && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <button className="modal-close" onClick={() => setSelectedNews(null)}>✖</button>
+            <h2>{selectedNews.title}</h2>
+            <hr />
+            <p>{selectedNews.summary}</p>
+            <p><b>날짜:</b> {selectedNews.crimeDay}</p>
+            <p className="location"><b>위치:</b> {selectedNews.location}</p>
+            <a href={selectedNews.newsLink} target="_blank" rel="noopener noreferrer">
+              관련 뉴스 보기
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default TrafficPage;
+export default SafetyPage;

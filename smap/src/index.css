@@ -37,6 +37,7 @@ body {
 
 /* 로고 */
 .smap-logo {
+  margin-top: 10px;
   width: 90px;
   height: 90px;
   flex-shrink: 0;
@@ -191,12 +192,51 @@ html, body {
   overflow: auto;
 }
 
-/* 제목 */
+
+/* 그래프 통합 */
 .graph-title {
   font-family: "SCDream6", sans-serif;
   font-size: 30px;
   font-weight: bold;
   margin-bottom: 20px;
+  text-align: center;
 }
+
+
+/* 범죄 그래프 */
+.chart-container {
+  width: 500px;
+  height: 500px;
+  margin: 0 auto;
+}
+
+.chart-container ul {
+  display: flex !important;
+  justify-content: center;
+  gap: 20px;
+}
+
+
+/* 시간 그래프 */
+.graph-container {
+  text-align: center;
+  margin-left: 400px;
+  overflow: auto;
+}
+
+.line-graph {
+  width: 90%;
+  max-width: 800px;
+  height: 400px;
+  margin: 0 auto;
+  padding-bottom: 30px;
+}
+
+.line-graph canvas {
+  max-width: 100%;
+}
+.line-graph .chartjs-render-monitor {
+}
+
 
 
