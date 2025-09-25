@@ -1,0 +1,58 @@
+/* 전체 GraphBar 사이드바 영역 */
+.report-bar {
+  position: fixed;
+  top: 160px;
+  left: 0;
+  width: 320px;
+  height: 100%;
+  background-color: #f2f2f2;
+  font-family: "SCDream2", sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 제목 */
+.report-bar .menu-title {
+  background-color: #ccc;
+  padding: 12px 14px;
+  font-weight: bold;
+  border: 1px solid #aaa;
+  cursor: pointer;
+}
+
+.report-bar .menu-title:hover {
+  background-color: #bbb;
+}
+
+.report-bar .menu-title.active {
+  background-color: #999;
+  color: white;
+}
+
+/* 지역 리스트 */
+.report-bar .region-list {
+  display: flex;
+  flex-direction: column;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-top: none;
+  padding: 6px 0;
+}
+
+/* 지역 아이템 (심플 리스트 스타일) */
+.report-bar .region-item {
+  padding: 8px 14px;
+  font-family: "SCDream3", sans-serif;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.report-bar .region-item:hover {
+  background-color: #ddd;
+}
+
+.report-bar .region-item.active {
+  color: #2e3b55;
+}
