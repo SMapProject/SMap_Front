@@ -6,14 +6,15 @@ const GraphBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isRegionalPage = location.pathname.startsWith("/Stats/Regional");
+  const isRegionalPage = location.pathname.toLowerCase().startsWith("/stats/regional");
   const [isRegionalOpen, setIsRegionalOpen] = useState(isRegionalPage);
 
 
   const getActive = (tab) => {
-    if (tab === "crime") return location.pathname.startsWith("/Stats/Crime");
-    if (tab === "regional") return location.pathname.startsWith("/Stats/Regional");
-    if (tab === "date") return location.pathname.startsWith("/Stats/Date");
+    const path = location.pathname.toLowerCase();
+    if (tab === "crime") return path === "/stats" || path.startsWith("/stats/crime");
+    if (tab === "regional") return path.startsWith("/stats/regional");
+    if (tab === "date") return path.startsWith("/stats/date");
     return false;
   };
 

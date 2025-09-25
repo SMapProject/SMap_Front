@@ -6,11 +6,14 @@ const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const path = location.pathname.toLowerCase();
+
   const getActive = (tab) => {
-    if (tab === "안전") return location.pathname.startsWith("/safety");
-    if (tab === "교통") return location.pathname.startsWith("/traffic");
-    if (tab === "통계") return location.pathname.startsWith("/stats");
-    if (tab === "제보") return location.pathname.startsWith("/report");
+    const path = location.pathname.toLowerCase();
+    if (tab === "안전") return path.startsWith("/safety");
+    if (tab === "교통") return path.startsWith("/traffic");
+    if (tab === "통계") return path.startsWith("/stats");
+    if (tab === "제보") return path.startsWith("/report");
     return false;
   };
 
