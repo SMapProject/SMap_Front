@@ -6,13 +6,16 @@ import "../../index.css";
 const SafetyPage = () => {
   const [selectedCrimes, setSelectedCrimes] = useState([]); 
   const [map, setMap] = useState(null);
-  const [markers, setMarkers] = useState([]);
+  const markersRef = useRef([]);
+  markersRef.current.forEach(m => m.setMap(null));
+  markersRef.current = [];
   const [selectedNews, setSelectedNews] = useState(null);
+
 
   // 카카오맵
   useEffect(() => {
     const script = document.createElement("script");
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=5167e7e56369e87754ac0c849f468bce&libraries=services&autoload=false`;
+    script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=...&libraries=services&autoload=false";
     document.head.appendChild(script);
 
     script.onload = () => {
