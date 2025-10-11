@@ -47,11 +47,17 @@ const SafetyPage = () => {
     setMarkers([]);
 
     if (selectedCrimes.length === 0) return;
+    
+    const query = selectedCrimes.map(c => `crimes=${encodeURIComponent(c)}`).join('&');
 
-    // ******************* 여기 ********************
-    fetch(`http://127.0.0.1:8000/api/news?crimeTypes=${selectedCrimes.join(",")}`) // 여기 넣 예시야
+    fetch(`https://port-0-smap-backend-1010-mgjfpi017e02308a.sel3.cloudtype.app/news?${query}`)
       .then((res) => res.json())
       .then((data) => {
+        if (!Array.isArray(data)) {
+          console.error("서버에서 배열이 아닌 데이터가 왔습니다:", data);
+          return;
+        }
+
         data.forEach((item) => {
           const geocoder = new window.kakao.maps.services.Geocoder();
 
@@ -132,17 +138,28 @@ const SafetyPage = () => {
         <div className="modal-overlay">
           <div className="modal-box">
             <button className="modal-close" onClick={() => setSelectedNews(null)}>✖</button>
-            <h2>{selectedNews.title}</h2>
-            <hr />
-            <p>{selectedNews.summary}</p>
-            <p><b>날짜:</b> {selectedNews.crimeDay}</p>
-            <p className="location"><b>위치:</b> {selectedNews.location}</p>
+      
+          {/* 제목: 범죄 유형 */}
+          <h2>{selectedNews.type || "범죄 사건"}</h2>
+          <hr />
+          <p>{selectedNews.title}</p>
+      
+          {/* 날짜 */}
+          <p><b>날짜:</b> {selectedNews.crimeDay || "알 수 없음"}</p>
+          
+          {/* 위치 */}
+          <p className="location"><b>위치:</b> {selectedNews.location || "알 수 없음"}</p>
+      
+          {/* 뉴스 링크 */}
+          {selectedNews.newsLink && (
             <a href={selectedNews.newsLink} target="_blank" rel="noopener noreferrer">
               관련 뉴스 보기
             </a>
-          </div>
-        </div>
-      )}
+          )}
+      </div>
+  </div>
+)}
+
     </div>
   );
 };
