@@ -6,16 +6,13 @@ import "../../index.css";
 const SafetyPage = () => {
   const [selectedCrimes, setSelectedCrimes] = useState([]); 
   const [map, setMap] = useState(null);
-  const markersRef = useRef([]);
-  markersRef.current.forEach(m => m.setMap(null));
-  markersRef.current = [];
+  const [markers, setMarkers] = useState([]);
   const [selectedNews, setSelectedNews] = useState(null);
-
 
   // 카카오맵
   useEffect(() => {
     const script = document.createElement("script");
-    script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=...&libraries=services&autoload=false";
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=5167e7e56369e87754ac0c849f468bce&libraries=services&autoload=false`;
     document.head.appendChild(script);
 
     script.onload = () => {
@@ -53,7 +50,7 @@ const SafetyPage = () => {
     
     const query = selectedCrimes.map(c => `crimes=${encodeURIComponent(c)}`).join('&');
 
-    fetch(`https://port-0-smap-backend-1010-mgjfpi017e02308a.sel3.cloudtype.app/news?${query}`)
+    fetch(`/news?${query}`)
       .then((res) => res.json())
       .then((data) => {
         if (!Array.isArray(data)) {
@@ -159,7 +156,7 @@ const SafetyPage = () => {
               관련 뉴스 보기
             </a>
           )}
-      </div>
+    </div>
   </div>
 )}
 
