@@ -47,21 +47,44 @@ const SafetyPage = () => {
     setMarkers([]);
 
     if (selectedCrimes.length === 0) return;
-    
-    const query = selectedCrimes.map(c => `crimes=${encodeURIComponent(c)}`).join('&');
 
-    fetch(`/news?${query}`)
-      .then((res) => res.json())
-      .then((data) => {
+    const query = selectedCrimes.map(c => `crimes=${encodeURIComponent(c)}`).join('&');
+    const url = `https://port-0-smap-1106-mhkpzrkrde061e33.sel3.cloudtype.app/news?${query}`;
+
+    fetch(url)
+      .then(async (res) => {
+        // 서버 응답 상태 먼저 확인
+        if (!res.ok) {
+          const errorText = await res.text();
+          console.error("서버 응답 오류:", res.status, errorText);
+          return [];
+        }
+
+        // JSON 파싱
+        let data;
+        try {
+          data = await res.json();
+        } catch (err) {
+          console.error("JSON 파싱 실패:", err);
+          return [];
+        }
+
+        // 배열인지 확인
         if (!Array.isArray(data)) {
           console.error("서버에서 배열이 아닌 데이터가 왔습니다:", data);
+          return [];
+        }
+
+        // 빈 배열 처리
+        if (data.length === 0) {
+          console.warn("서버에서 받은 데이터가 없습니다.");
           return;
         }
 
+        // DB 데이터 → 지도에 마커 표시
         data.forEach((item) => {
           const geocoder = new window.kakao.maps.services.Geocoder();
 
-          // DB에서 주소 문자열로 받음 → 좌표 변환
           geocoder.addressSearch(item.location, (result, status) => {
             if (status === window.kakao.maps.services.Status.OK) {
               const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
@@ -86,6 +109,7 @@ const SafetyPage = () => {
       })
       .catch((err) => console.error("데이터 불러오기 실패:", err));
   }, [selectedCrimes, map]);
+
 
   return (
     <div>
@@ -137,28 +161,44 @@ const SafetyPage = () => {
       {selectedNews && (
         <div className="modal-overlay">
           <div className="modal-box">
+
             <button className="modal-close" onClick={() => setSelectedNews(null)}>✖</button>
-      
-          {/* 제목: 범죄 유형 */}
-          <h2>{selectedNews.type || "범죄 사건"}</h2>
-          <hr />
-          <p>{selectedNews.title}</p>
-      
-          {/* 날짜 */}
-          <p><b>날짜:</b> {selectedNews.crimeDay || "알 수 없음"}</p>
-          
-          {/* 위치 */}
-          <p className="location"><b>위치:</b> {selectedNews.location || "알 수 없음"}</p>
-      
-          {/* 뉴스 링크 */}
-          {selectedNews.newsLink && (
-            <a href={selectedNews.newsLink} target="_blank" rel="noopener noreferrer">
-              관련 뉴스 보기
-            </a>
-          )}
-    </div>
-  </div>
-)}
+
+            {/* 제목 */}
+            <h2 className="modal-title">{selectedNews.type || "범죄유형"}</h2>
+
+            <div className="modal-content">
+
+              {/* 날짜 */}
+              <div className="modal-row">
+                <div className="modal-input-group">
+                  <label>사건 날짜</label>
+                  <input type="text" readOnly value={selectedNews.crimeDay || "날짜 없음"} />
+                </div>
+              </div>
+
+              {/* 설명 */}
+              <div className="modal-input-group full">
+                <label>사건 설명</label>
+                <textarea readOnly value={selectedNews.title || "설명 없음"} />
+              </div>
+
+              {/* 링크 */}
+              {selectedNews.newsLink && (
+                <div className="modal-input-group full link-row">
+                  <label>링크 첨부</label>
+                  <div className="link-box">
+                    <input type="text" readOnly value={selectedNews.newsLink} />
+                    <a href={selectedNews.newsLink} target="_blank" rel="noopener noreferrer">🔗</a>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          </div>
+        </div>
+      )}
+
 
     </div>
   );

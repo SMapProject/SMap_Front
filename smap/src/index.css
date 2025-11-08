@@ -134,7 +134,7 @@ html, body {
 
 
 /* 모달 */
-/* 모달 오버레이 */
+/* 오버레이 */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -146,59 +146,119 @@ html, body {
   justify-content: center;
   align-items: center;
   z-index: 2000;
-  padding: 20px; /* 작은 화면에서 패딩 추가 */
-  box-sizing: border-box;
+  padding: 20px;
 }
 
-/* 모달 박스 */
+/* 박스 */
 .modal-box {
-  background: #1e1e1e;
-  color: white;
-  padding: 30px;
-  border-radius: 12px;
-  width: 600px;       /* 기존 400px -> 600px */
-  max-width: 90%;     /* 화면 비율 최대 */
+  background: #202020;
+  color: #fff;
+  padding: 40px;
+  border-radius: 16px;
+  width: 750px;
+  max-width: 90%;
   position: relative;
-  word-wrap: break-word;
-  overflow-y: auto;   /* 내용 길어도 스크롤 가능 */
-  max-height: 90vh;   /* 화면 넘치면 스크롤 */
+  box-shadow: 0 0 20px rgba(0,0,0,0.6);
 }
 
 /* 제목 */
-.modal-box h2 {
-  margin: 0 0 15px 0;
-  font-size: 32px;  /* 너무 크면 작은 화면에서 깨짐 */
-  font-family: "SCDream8", sans-serif;
-  word-break: break-word;
+.modal-title {
+  text-align: center;
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 25px;
+  font-family: "SCDream6", sans-serif;
 }
 
-/* 내용 */
-.modal-box p,
-.modal-box a {
-  font-size: 18px;
-  margin: 8px 0;
+/* 레이아웃 */
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modal-row {
+  display: flex;
+  gap: 20px;
+}
+
+.modal-input-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.modal-input-group.full {
+  width: 100%;
+}
+
+.modal-input-group label {
+  font-family: "SCDream6", sans-serif;
+  margin-bottom: 6px;
+  color: #ffffff; 
+  opacity: 1;
+}
+
+/* 입력 필드 공통 */
+input,
+textarea {
+  background: #202020;
+  border: 1px solid #fff;
+  padding: 14px;
+  color: #fff;
+  border-radius: 8px;
   font-family: "SCDream4", sans-serif;
-  white-space: pre-wrap;  /* 줄바꿈 유지 */
-  word-break: break-word; /* 단어가 길어도 줄바꿈 */
+}
+
+/* 설명 */
+textarea {
+  height: 100px;
+  resize: none;
+  font-family: "SCDream4", sans-serif;
+}
+
+.link-row {
+  width: 100%;
 }
 
 /* 링크 */
-.modal-box a {
-  color: #00bfff;
-  text-decoration: underline;
+.link-box {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  font-family: "SCDream4", sans-serif;
+}
+
+.link-box a {
+  margin-left: 10px;
+  font-family: "SCDream4", sans-serif;
+  color: #202020;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  text-decoration: none;
+}
+
+.link-box input {
+  flex: 1;
+  padding-right: 38px;
 }
 
 /* 닫기 버튼 */
 .modal-close {
   position: absolute;
-  top: 10px;
-  right: 15px;
+  top: 12px;
+  right: 16px;
   background: none;
   border: none;
-  color: white;
-  font-size: 24px;
+  color: #fff;
+  font-size: 32px;
   cursor: pointer;
 }
+
 
 
 /* 그래프 영역 */
@@ -220,8 +280,8 @@ html, body {
 
 /* 범죄 그래프 */
 .chart-container {
-  width: 800px;
-  height: 900px;
+  width: 500px;
+  height: 500px;
   margin: 0 auto;
 }
 
