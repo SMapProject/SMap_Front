@@ -18,58 +18,63 @@ import {
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Daegu = () => {
-  const [crimeData, setCrimeData] = useState([0, 0, 0, 0]);
-
-  useEffect(() => {
-    // ***********************************
-    fetch("api") // api 여기에 넣
-      .then((res) => res.json())
-      .then((data) => {
-        // data = { 개인범죄: 35, 재산범죄: 70, 사회범죄: 50, 특별범죄: 90 } 횟수
-        setCrimeData([
-          data["개인범죄"],
-          data["재산범죄"],
-          data["사회범죄"],
-          data["특별범죄"],
-        ]);
-      })
-      .catch((err) => {
-        console.error("범죄 데이터 가져오기 실패:", err);
+    const [crimeData, setCrimeData] = useState([0, 0, 0, 0, 0]);
+  
+    useEffect(() => {
+      const crimeTypes = ["강력범죄", "절도범죄", "폭력범죄", "지능범죄", "풍속범죄"];
+      console.log("대구 범죄 데이터 가져오기 시작...");
+  
+      Promise.all(
+        crimeTypes.map((type) =>
+          fetch(`https://port-0-smap-backend-mhkpzrkrde061e33.sel3.cloudtype.app/areaGraph/search?region=대구&crimetype=${encodeURIComponent(type)}`)
+            .then((res) => res.json())
+            .then((data) => {
+              console.log(`${type} 데이터:`, data);
+              return data[0]?.count || 0; // count 값 가져오기, 없으면 0
+            })
+            .catch((err) => {
+              console.error(`${type} 데이터 가져오기 실패:`, err);
+              return 0;
+            })
+        )
+      ).then((counts) => {
+        setCrimeData(counts);
+        console.log("state에 저장된 범죄 데이터:", counts);
       });
-  }, []);
-
-  const data = {
-    labels: ["개인범죄", "재산범죄", "사회범죄", "특별범죄"],
-    datasets: [
-      {
-        label: "범죄건수",
-        data: crimeData,
-        backgroundColor: ["#3A3A3A"],
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "대구 범죄 종류별 건수",
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 100,
-        ticks: {
-          stepSize: 10,
+    }, []);
+  
+    const data = {
+      labels: ["강력범죄", "절도범죄", "폭력범죄", "지능범죄", "풍속범죄"],
+      datasets: [
+        {
+          label: "범죄건수",
+          data: crimeData,
+          backgroundColor: ["#3A3A3A"],
+        },
+      ],
+    };
+  
+    const options = {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: "top",
+        },
+        title: {
+          display: true,
+          text: "범죄 종류별 건수",
         },
       },
-    },
-  };
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 15000,
+          ticks: {
+            stepSize: 10,
+          },
+        },
+      },
+    };
 
   return (
     <div>

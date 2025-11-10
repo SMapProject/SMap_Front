@@ -1,128 +1,183 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import NavBar from "../../components/NavBar";
-import "../../components/NavBar.css"; 
+import "../../components/NavBar.css";
 import "../../index.css";
 
-const SafetyPage = () => {
-  const [selectedCrimes, setSelectedCrimes] = useState([]); 
-  const [map, setMap] = useState(null);
-  const [markers, setMarkers] = useState([]);
-  const [selectedNews, setSelectedNews] = useState(null);
+const SAFETY_CENTER = { lat: 37.566535, lng: 126.9779692 };
 
-  // 카카오맵
+const SafetyPage = () => {
+  const [selectedCrimes, setSelectedCrimes] = useState([]);
+  const [map, setMap] = useState(null);
+
+  // 모달에서 보여줄 현재 선택된 위치의 사건들
+  const [selectedList, setSelectedList] = useState([]); // array of items at same location
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const markersRef = useRef([]); // 실제 카카오 마커들
+  const locationMapRef = useRef(new Map()); // key: "lat_lng" -> { marker, items: [] }
+  const geocoderRef = useRef(null);
+  const placesRef = useRef(null);
+
+  // 카카오맵 로드
   useEffect(() => {
     const script = document.createElement("script");
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=5167e7e56369e87754ac0c849f468bce&libraries=services&autoload=false`;
+    script.async = true;
     document.head.appendChild(script);
 
     script.onload = () => {
       window.kakao.maps.load(() => {
         const container = document.getElementById("kakao-map");
-        const options = {
-          center: new window.kakao.maps.LatLng(37.5665, 126.9780), // 서울 중심
+        const createdMap = new window.kakao.maps.Map(container, {
+          center: new window.kakao.maps.LatLng(SAFETY_CENTER.lat, SAFETY_CENTER.lng),
           level: 4,
-        };
-        const createdMap = new window.kakao.maps.Map(container, options);
+        });
+
+        geocoderRef.current = new window.kakao.maps.services.Geocoder();
+        placesRef.current = new window.kakao.maps.services.Places();
         setMap(createdMap);
       });
     };
+
+    // cleanup: 스크립트 제거는 생략 (SPA 상주)
   }, []);
 
-  // 체크박스
   const handleCheckboxChange = (e) => {
-    const { value, checked } = e.target;
-    if (checked) {
-      setSelectedCrimes((prev) => [...prev, value]);
-    } else {
-      setSelectedCrimes((prev) => prev.filter((crime) => crime !== value));
-    }
+    const value = e.target.value;
+    setSelectedCrimes((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+    );
   };
 
-  // DB 가져오기 & 마커 표시
-  useEffect(() => {
-    if (!map) return;
+  // 주소/장소 검색 (기존 로직 재사용)
+  const searchLocation = (location) => {
+    return new Promise((resolve) => {
+      if (!location) {
+        resolve(null);
+        return;
+      }
+      const geocoder = geocoderRef.current;
+      const places = placesRef.current;
 
-    // 기존 마커 제거
-    markers.forEach((m) => m.setMap(null));
-    setMarkers([]);
-
-    if (selectedCrimes.length === 0) return;
-
-    const query = selectedCrimes.map(c => `crimes=${encodeURIComponent(c)}`).join('&');
-    const url = `https://port-0-smap-1106-mhkpzrkrde061e33.sel3.cloudtype.app/news?${query}`;
-
-    fetch(url)
-      .then(async (res) => {
-        // 서버 응답 상태 먼저 확인
-        if (!res.ok) {
-          const errorText = await res.text();
-          console.error("서버 응답 오류:", res.status, errorText);
-          return [];
-        }
-
-        // JSON 파싱
-        let data;
-        try {
-          data = await res.json();
-        } catch (err) {
-          console.error("JSON 파싱 실패:", err);
-          return [];
-        }
-
-        // 배열인지 확인
-        if (!Array.isArray(data)) {
-          console.error("서버에서 배열이 아닌 데이터가 왔습니다:", data);
-          return [];
-        }
-
-        // 빈 배열 처리
-        if (data.length === 0) {
-          console.warn("서버에서 받은 데이터가 없습니다.");
+      geocoder.addressSearch(location, (res, status) => {
+        if (status === window.kakao.maps.services.Status.OK && res && res[0]) {
+          resolve({ lat: Number(res[0].y), lng: Number(res[0].x) });
           return;
         }
 
-        // DB 데이터 → 지도에 마커 표시
-        data.forEach((item) => {
-          const geocoder = new window.kakao.maps.services.Geocoder();
-
-          geocoder.addressSearch(item.location, (result, status) => {
-            if (status === window.kakao.maps.services.Status.OK) {
-              const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
-
-              const marker = new window.kakao.maps.Marker({
-                map: map,
-                position: coords,
-                title: item.title,
-              });
-
-              // 마커 클릭 → 모달 열기
-              window.kakao.maps.event.addListener(marker, "click", () => {
-                setSelectedNews(item);
-              });
-
-              setMarkers((prev) => [...prev, marker]);
-            } else {
-              console.warn("주소 변환 실패:", item.location);
-            }
-          });
+        places.keywordSearch(location, (res2, status2) => {
+          if (status2 === window.kakao.maps.services.Status.OK && res2 && res2[0]) {
+            resolve({ lat: Number(res2[0].y), lng: Number(res2[0].x) });
+          } else {
+            resolve(null);
+          }
         });
-      })
-      .catch((err) => console.error("데이터 불러오기 실패:", err));
+      });
+    });
+  };
+
+  // selectedCrimes/맵 변경시 마커 갱신
+  useEffect(() => {
+    if (!map) return;
+
+    // 기존 마커/데이터 초기화
+    locationMapRef.current.forEach(({ marker }) => {
+      if (marker) marker.setMap(null);
+    });
+    locationMapRef.current.clear();
+    markersRef.current = [];
+
+    if (selectedCrimes.length === 0) return;
+
+    const url = `https://port-0-smap-backend-mhkpzrkrde061e33.sel3.cloudtype.app/news?crimeType=${selectedCrimes.join(",")}`;
+
+    const fetchAndPlace = async () => {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) {
+          console.error("서버 오류:", res.status);
+          return;
+        }
+        const data = await res.json();
+        if (!Array.isArray(data) || data.length === 0) return;
+
+        // 병렬로 주소 검색하지 말고 순차 처리(카카오 쿼터/안정성 고려)
+        for (const item of data) {
+          const coords = await searchLocation(item.location);
+          const lat = coords ? coords.lat : SAFETY_CENTER.lat;
+          const lng = coords ? coords.lng : SAFETY_CENTER.lng;
+
+          const key = `${lat.toFixed(6)}_${lng.toFixed(6)}`; // 소수점으로 그룹화
+          const existing = locationMapRef.current.get(key);
+
+          if (existing) {
+            // 같은 위치에 추가
+            existing.items.push(item);
+          } else {
+            // 새 마커 생성
+            const position = new window.kakao.maps.LatLng(lat, lng);
+            const marker = new window.kakao.maps.Marker({ map, position, title: item.title });
+
+            // 클릭 시 해당 위치의 사건들로 모달 열기
+            window.kakao.maps.event.addListener(marker, "click", () => {
+              const bucket = locationMapRef.current.get(key);
+              if (!bucket) return;
+              setSelectedList(bucket.items);
+              setSelectedIndex(0);
+              setIsModalOpen(true);
+
+              // 모달이 열릴 때 첫 사건을 선택 상태로 유지
+            });
+
+            locationMapRef.current.set(key, { marker, items: [item] });
+            markersRef.current.push(marker);
+          }
+        }
+      } catch (err) {
+        console.error("데이터 로드 실패:", err);
+      }
+    };
+
+    fetchAndPlace();
   }, [selectedCrimes, map]);
 
+  // 모달 내 이전/다음 이동
+  const goPrev = () => {
+    if (!selectedList || selectedList.length === 0) return;
+    const next = (selectedIndex - 1 + selectedList.length) % selectedList.length;
+    setSelectedIndex(next);
+  };
+
+  const goNext = () => {
+    if (!selectedList || selectedList.length === 0) return;
+    const next = (selectedIndex + 1) % selectedList.length;
+    setSelectedIndex(next);
+  };
+
+  // selectedIndex가 바뀔 때 (모달 콘텐츠가 갱신되게)
+  useEffect(() => {
+    // no-op for now; modal reads selectedList[selectedIndex]
+  }, [selectedIndex, selectedList]);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedList([]);
+    setSelectedIndex(0);
+  };
+
+  // helper to safely read current item
+  const currentItem = selectedList && selectedList.length > 0 ? selectedList[selectedIndex] : null;
 
   return (
     <div>
-      {/* 로고 */}
       <div className="smap-logo-fixed">
         <img src="/logo/SMap_Logo.png" alt="SMap Logo" className="smap-logo" />
         <div className="smap-text">smap</div>
       </div>
 
-      {/* 네비게이션 바 */}
       <NavBar />
 
-      {/* 범죄 종류 체크박스 */}
       <div className="content-area">
         <div className="crime-category">
           <h3>개인범죄</h3>
@@ -154,51 +209,74 @@ const SafetyPage = () => {
         </div>
       </div>
 
-      {/* 지도 */}
-      <div id="kakao-map"></div>
+      <div id="kakao-map" style={{ width: "100%", height: "600px" }}></div>
 
       {/* 모달 */}
-      {selectedNews && (
+      {isModalOpen && currentItem && (
         <div className="modal-overlay">
-          <div className="modal-box">
+          <div className="modal-box modal-with-nav">
+            <button className="modal-close" onClick={closeModal}>✖</button>
 
-            <button className="modal-close" onClick={() => setSelectedNews(null)}>✖</button>
+            {/* 전체 내비게이션 포함 박스 */}
+            <div className="modal-nav-container">
 
-            {/* 제목 */}
-            <h2 className="modal-title">{selectedNews.type || "범죄유형"}</h2>
+              {/* 왼쪽 이동 버튼 */}
+              <button
+                className="modal-nav-btn modal-prev-btn"
+                onClick={goPrev}
+                disabled={selectedIndex === 0}
+                aria-label="previous"
+              >
+                &lt;
+              </button>
 
-            <div className="modal-content">
+              {/* 본문 */}
+              <div className="modal-main">
+                <h2 className="modal-title">{currentItem.type || "범죄유형"}</h2>
 
-              {/* 날짜 */}
-              <div className="modal-row">
-                <div className="modal-input-group">
-                  <label>사건 날짜</label>
-                  <input type="text" readOnly value={selectedNews.crimeDay || "날짜 없음"} />
-                </div>
-              </div>
-
-              {/* 설명 */}
-              <div className="modal-input-group full">
-                <label>사건 설명</label>
-                <textarea readOnly value={selectedNews.title || "설명 없음"} />
-              </div>
-
-              {/* 링크 */}
-              {selectedNews.newsLink && (
-                <div className="modal-input-group full link-row">
-                  <label>링크 첨부</label>
-                  <div className="link-box">
-                    <input type="text" readOnly value={selectedNews.newsLink} />
-                    <a href={selectedNews.newsLink} target="_blank" rel="noopener noreferrer">🔗</a>
+                <div className="modal-content">
+                  <div className="modal-row">
+                    <div className="modal-input-group">
+                      <label>사건 날짜</label>
+                      <input type="text" readOnly value={currentItem.crimeDay || "날짜 없음"} />
+                    </div>
                   </div>
-                </div>
-              )}
 
+                  <div className="modal-input-group full">
+                    <label>사건 설명</label>
+                    <textarea readOnly value={currentItem.title || "설명 없음"} />
+                  </div>
+
+                  {currentItem.newsLink && (
+                    <div className="modal-input-group full link-row">
+                      <label>링크 첨부</label>
+                      <div className="link-box">
+                        <input type="text" readOnly value={currentItem.newsLink} />
+                        <a href={currentItem.newsLink} target="_blank" rel="noopener noreferrer">🔗</a>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 현재 인덱스 */}
+                <div className="modal-index">
+                  {String(selectedIndex + 1).padStart(2, "0")} / {String(selectedList.length).padStart(2, "0")}
+                </div>
+              </div>
+
+              {/* 오른쪽 이동 버튼 */}
+              <button
+                className="modal-nav-btn modal-next-btn"
+                onClick={goNext}
+                disabled={selectedIndex === selectedList.length - 1}
+                aria-label="next"
+              >
+                &gt;
+              </button>
             </div>
           </div>
         </div>
       )}
-
 
     </div>
   );

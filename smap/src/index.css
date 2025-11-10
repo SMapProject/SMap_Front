@@ -258,6 +258,79 @@ textarea {
   font-size: 32px;
   cursor: pointer;
 }
+/* 슬라이드 버튼 컨테이너 */
+.modal-slide-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 25px; /* 모달 내용과 버튼 간격 */
+  gap: 20px;
+}
+
+/* 공통 버튼 스타일 */
+.slide-btn {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #000000;
+  color: #000000;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 슬라이드 네비게이션 */
+.modal-nav-btn {
+  position: absolute;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #202020;
+  border: none;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: all 0.25s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+  box-shadow: 0 0 10px rgba(0,0,0,0.35);
+}
+
+/* 왼쪽 버튼 */
+.modal-prev-btn {
+  left: -70px; /* 모달 바깥 위치 */
+}
+
+/* 오른쪽 버튼 */
+.modal-next-btn {
+  right: -70px;
+}
+
+/* hover 효과 */
+.modal-nav-btn:hover {
+  background: #ffffff;
+  color: #202020;
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* 비활성화 */
+.modal-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: translateY(-50%) scale(1);
+}
+
+
 
 
 

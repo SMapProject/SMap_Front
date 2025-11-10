@@ -29,19 +29,50 @@ const ErrorReport = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("제출 데이터:", formData);
-    alert("제보가 제출되었습니다!");
+
+    try {
+    // 첫 번째 메일 전송 (/mail/send)
+    const response1 = await fetch(
+      "https://port-0-smap-backend-main-mhkpzrkrde061e33.sel3.cloudtype.app/mail/send",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      }
+    );
+
+    if (!response1.ok) throw new Error(`메일 서버 오류: ${response1.status}`);
+    const data1 = await response1.json();
+    console.log("메일 서버 응답:", data1);
+
+    // 두 번째 메일 전송 
+    const response2 = await fetch(
+      "https://port-0-smap-backend-mhkpzrkrde061e33.sel3.cloudtype.app/errorMail/send",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      }
+    );
+
+    if (!response2.ok) throw new Error(`데이터메일 서버 오류: ${response2.status}`);
+    const data2 = await response2.json();
+    console.log("데이터메일 서버 응답:", data2);
+
+    alert("제보가 성공적으로 제출되었습니다!");
+  } catch (error) {
+    console.error("제출 오류:", error);
+    alert("제보 제출에 실패했습니다.");
+  }
 
     // 폼 초기화
     setFormData({
-      crimeTypes: [],
       location: "",
-      date: "",
       newsUrl: "",
       email: "",
-      content: "",
     });
   };
 

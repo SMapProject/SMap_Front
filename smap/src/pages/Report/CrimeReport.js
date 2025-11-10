@@ -34,26 +34,39 @@ const CrimeReport = () => {
     console.log("제출 데이터:", formData);
 
     try {
-      const response = await fetch(
-        "https://port-0-smap-1105-mhkpzrkrde061e33.sel3.cloudtype.app/mail/send",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData), // formData 전체 전송
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`서버 오류: ${response.status}`);
+    // 첫 번째 메일 전송 (/mail/send)
+    const response1 = await fetch(
+      "https://port-0-smap-backend-main-mhkpzrkrde061e33.sel3.cloudtype.app/mail/send",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       }
+    );
 
-      const data = await response.json();
-      console.log("서버 응답:", data);
-      alert("제보가 제출되었습니다!");
-    } catch (error) {
-      console.error("제출 오류:", error);
-      alert("제보 제출에 실패했습니다.");
-    }
+    if (!response1.ok) throw new Error(`메일 서버 오류: ${response1.status}`);
+    const data1 = await response1.json();
+    console.log("메일 서버 응답:", data1);
+
+    // 두 번째 메일 전송 (/dataMail/send)
+    const response2 = await fetch(
+      "https://port-0-smap-backend-main-mhkpzrkrde061e33.sel3.cloudtype.app/dataMail/send",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      }
+    );
+
+    if (!response2.ok) throw new Error(`데이터메일 서버 오류: ${response2.status}`);
+    const data2 = await response2.json();
+    console.log("데이터메일 서버 응답:", data2);
+
+    alert("제보가 성공적으로 제출되었습니다!");
+  } catch (error) {
+    console.error("제출 오류:", error);
+    alert("제보 제출에 실패했습니다.");
+  }
 
     // 폼 초기화
     setFormData({
