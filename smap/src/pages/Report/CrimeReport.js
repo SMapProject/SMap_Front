@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import NavBar from "../../components/NavBar";
 import "../../components/NavBar.css";
-import ReportBar from "../../components/ReportBar"; 
-import "../../components/ReportBar.css";
 import "../../index.css";
 
 const CrimeReport = () => {
@@ -31,7 +29,7 @@ const CrimeReport = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("제출 데이터:", formData);
+    console.logP("제출 데이터:", formData);
 
     try {
     // 메일 전송
@@ -75,11 +73,6 @@ const CrimeReport = () => {
 
       {/* 네비게이션 바 */}
       <NavBar />
-
-      <div className="content-area">
-        {/* 사이드 바 */}
-        <ReportBar />
-      </div>
 
       {/* 메인 폼 영역 */}
       <div className="report-form-container">
@@ -161,6 +154,7 @@ const CrimeReport = () => {
 
           {/* 제출 버튼 */}
           <button type="submit" className="submit-btn">제출</button>
+          <h2></h2>
         </form>
       </div>
     </div>

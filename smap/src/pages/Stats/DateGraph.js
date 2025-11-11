@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "../../components/NavBar";
 import "../../components/NavBar.css"; 
-import GraphBar from "../../components/GraphBar";
-import "../../components/GraphBar.css";
 import "../../index.css";
 import {
   Chart as ChartJS,
@@ -156,8 +154,6 @@ const DateGraph = () => {
 
       {/* 네비게이션 바 */}
       <NavBar />
-      {/* 사이드바 */}
-      <GraphBar />
 
       {/* 그래프 영역 */}
       <div className="graph-container">

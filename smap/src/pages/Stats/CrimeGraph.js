@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "../../components/NavBar";
 import "../../components/NavBar.css";
-import GraphBar from "../../components/GraphBar";
-import "../../components/GraphBar.css";
 import "../../index.css";
 
 import {
@@ -104,7 +102,7 @@ const CrimeGraph = () => {
           crimeData.지능범죄,
           crimeData.풍속범죄,
         ],
-        backgroundColor: ["#000000", "#3A3A3A", "#848484", "#373737", "#dfdfdfff"],
+        backgroundColor: ["#000000", "#2a2a2aff", "#3a3a3aff", "#626262ff", "#dfdfdfff"],
         hoverOffset: 6,
       },
     ],
@@ -131,11 +129,10 @@ const CrimeGraph = () => {
       </div>
 
       <NavBar />
-      <GraphBar />
 
       <div className="graph-container">
         <h2 className="graph-title">{getDayName()}요일 범죄 그래프</h2>
-        <div className="chart-container">
+        <div className="crime-chart-container">
           <Doughnut data={data} options={options} />
         </div>
       </div>

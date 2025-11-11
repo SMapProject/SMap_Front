@@ -89,11 +89,12 @@
 
 /* 체크박스 */
 .crime-category {
+  margin-top: -20px;
   margin-bottom: 20px;
 }
 
 .crime-category h3 {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   font-size: 18px;
   font-weight: 600;
   font-family: "SCDream8", sans-serif;
@@ -101,7 +102,7 @@
 
 .crime-category label {
   display: block; 
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   cursor: pointer;
   font-size: 16px;
   font-family: "SCDream6", sans-serif;
@@ -351,10 +352,18 @@ textarea {
 }
 
 
-/* 범죄 그래프 */
+/* 그래프 */
 .chart-container {
-  width: 500px;
-  height: 500px;
+  width: 80%;
+  width: 900px;
+  height: 600px;
+  margin: 0 auto;
+}
+
+/* 그래프 */
+.crime-chart-container {
+  width: 600px;
+  height: 600px;
   margin: 0 auto;
 }
 
@@ -383,8 +392,6 @@ textarea {
 .line-graph canvas {
   max-width: 100%;
 }
-.line-graph .chartjs-render-monitor {
-}
 
 /* 전체 페이지 레이아웃 */
 body {
@@ -408,7 +415,7 @@ header {
   margin-left: 360px;
   padding: 40px;
   font-family: "SCDream6", sans-serif;
-  height: calc(100vh - 160px);
+  height: calc(120vh - 160px);
   overflow-y: auto;
 }
 
