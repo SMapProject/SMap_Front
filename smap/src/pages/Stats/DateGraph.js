@@ -62,7 +62,7 @@ const DateGraph = () => {
 
         const promises = crimeTypes.map(type =>
           fetch(
-            `https://port-0-smap-backend-mhkpzrkrde061e33.sel3.cloudtype.app/timeGraph/search?crimetype=${encodeURIComponent(type)}&time=${encodeURIComponent(time)}`
+            `https://port-0-smap-backend-main-mhkpzrkrde061e33.sel3.cloudtype.app/timeGraph/search?crimetype=${encodeURIComponent(type)}&time=${encodeURIComponent(time)}`
           )
             .then(res => res.json())
             .catch(err => {

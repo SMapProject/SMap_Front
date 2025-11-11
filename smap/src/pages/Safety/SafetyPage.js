@@ -90,7 +90,7 @@ const SafetyPage = () => {
 
     if (selectedCrimes.length === 0) return;
 
-    const url = `https://port-0-smap-backend-mhkpzrkrde061e33.sel3.cloudtype.app/news?crimeType=${selectedCrimes.join(",")}`;
+    const url = `https://port-0-smap-backend-main-mhkpzrkrde061e33.sel3.cloudtype.app/news?crimeType=${selectedCrimes.join(",")}`;
 
     const fetchAndPlace = async () => {
       try {

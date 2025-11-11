@@ -40,7 +40,7 @@ const CrimeGraph = () => {
     Promise.all(
       types.map(async (type) => {
         // URL 생성
-        const url = `https://port-0-smap-backend-mhkpzrkrde061e33.sel3.cloudtype.app/dateGraph/search?crimetype=${encodeURIComponent(type)}&date=${encodeURIComponent(day)}`;
+        const url = `https://port-0-smap-backend-main-mhkpzrkrde061e33.sel3.cloudtype.app/dateGraph/search?crimetype=${encodeURIComponent(type)}&date=${encodeURIComponent(day)}`;
         
         // 콘솔에 요청 정보 출력
         console.log("Fetch 시도 URL:", url);

@@ -34,23 +34,9 @@ const ErrorReport = () => {
     console.log("제출 데이터:", formData);
 
     try {
-    // 첫 번째 메일 전송 (/mail/send)
-    const response1 = await fetch(
-      "https://port-0-smap-backend-main-mhkpzrkrde061e33.sel3.cloudtype.app/mail/send",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      }
-    );
-
-    if (!response1.ok) throw new Error(`메일 서버 오류: ${response1.status}`);
-    const data1 = await response1.json();
-    console.log("메일 서버 응답:", data1);
-
-    // 두 번째 메일 전송 
+    // 메일 전송 
     const response2 = await fetch(
-      "https://port-0-smap-backend-mhkpzrkrde061e33.sel3.cloudtype.app/errorMail/send",
+      "https://port-0-smap-backend-main-mhkpzrkrde061e33.sel3.cloudtype.app/errorMail/send",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
