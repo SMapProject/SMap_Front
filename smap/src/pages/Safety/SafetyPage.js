@@ -87,7 +87,24 @@ const SafetyPage = () => {
           if (existing) existing.items.push(item);
           else {
             const position = new window.kakao.maps.LatLng(lat, lng);
-            const marker = new window.kakao.maps.Marker({ map, position, title: item.title });
+            // 마커
+            const markerImageSrc = "/logo/SMap_Logo.png"; 
+            const markerImageSize = new window.kakao.maps.Size(64, 69);
+            const markerImageOption = { offset: new window.kakao.maps.Point(32, 69) };
+
+            const markerImage = new window.kakao.maps.MarkerImage(
+              markerImageSrc,
+              markerImageSize,
+              markerImageOption
+            );
+
+            const marker = new window.kakao.maps.Marker({
+              map,
+              position,
+              title: item.title,
+              image: markerImage
+            });
+
             window.kakao.maps.event.addListener(marker, "click", () => {
               const bucket = locationMapRef.current.get(key);
               if (!bucket) return;
