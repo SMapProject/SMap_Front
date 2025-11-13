@@ -24,7 +24,7 @@ const Incheon = () => {
   
       Promise.all(
         crimeTypes.map((type) =>
-          fetch(`https://port-0-smap-backend-main-mhkpzrkrde061e33.sel3.cloudtype.app/areaGraph/search?region=인천&crimetype=${encodeURIComponent(type)}`)
+          fetch(`https://port-0-smap-backend-mhkpzrkrde061e33.sel3.cloudtype.app/areaGraph/search?region=인천&crimetype=${encodeURIComponent(type)}`)
             .then((res) => res.json())
             .then((data) => {
               console.log(`${type} 데이터:`, data);

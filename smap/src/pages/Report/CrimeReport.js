@@ -29,12 +29,12 @@ const CrimeReport = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.logP("제출 데이터:", formData);
+    console.log("제출 데이터:", formData);
 
     try {
     // 메일 전송
     const response2 = await fetch(
-      "https://port-0-smap-backend-main-mhkpzrkrde061e33.sel3.cloudtype.app/dataMail/send",
+      "https://port-0-smap-backend-mhkpzrkrde061e33.sel3.cloudtype.app/dataMail/send",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

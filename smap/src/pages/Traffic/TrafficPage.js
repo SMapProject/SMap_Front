@@ -59,14 +59,6 @@ const SafetyPage = () => {
     });
   });
 
-  // 체크박스 선택
-  const handleCheckboxChange = (e) => {
-    const value = e.target.value;
-    setSelectedCrimes((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
-  };
-
   // 마커 갱신
   useEffect(() => {
     if (!map) return;
@@ -75,7 +67,7 @@ const SafetyPage = () => {
     markersRef.current = [];
     if (selectedCrimes.length === 0) return;
 
-    const url = `https://port-0-smap-backend-main-mhkpzrkrde061e33.sel3.cloudtype.app/news?crimeType=${selectedCrimes.join(",")}`;
+    const url = `https://port-0-smap-backend-mhkpzrkrde061e33.sel3.cloudtype.app/news?crimeType=${selectedCrimes.join(",")}`;
 
     const fetchAndPlace = async () => {
       try {

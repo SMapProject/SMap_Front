@@ -34,7 +34,7 @@ const ErrorReport = () => {
     try {
     // 메일 전송 
     const response2 = await fetch(
-      "https://port-0-smap-backend-main-mhkpzrkrde061e33.sel3.cloudtype.app/errorMail/send",
+      "https://port-0-smap-backend-mhkpzrkrde061e33.sel3.cloudtype.app/errorMail/send",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
