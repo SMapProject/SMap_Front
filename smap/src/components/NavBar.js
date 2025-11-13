@@ -61,6 +61,10 @@ const NavBar = ({ selectedCrimes, setSelectedCrimes }) => {
     // 지역그래프 페이지일 때 자동 열기
     if (path.startsWith("/stats/regional")) setOpenSubMenu("지역그래프");
     else setOpenSubMenu(null);
+
+    // 제보 페이지일 때 자동 열기
+    if (path.startsWith("/report/crime")) setOpenSubMenu("범죄제보");
+    else setOpenSubMenu(null);
   }, [path]);
 
   const toggleMenu = (id) => {

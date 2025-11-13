@@ -127,7 +127,7 @@ const SafetyPage = () => {
             <div className="modal-nav-container">
               <button className="modal-nav-btn modal-prev-btn" onClick={goPrev} disabled={selectedIndex === 0}>&lt;</button>
               <div className="modal-main">
-                <h2 className="modal-title">{currentItem.type || "범죄유형"}</h2>
+                <h2 className="modal-title">교통</h2>
                 <div className="modal-content">
                   <div className="modal-input-group">
                     <label>사건 날짜</label>
