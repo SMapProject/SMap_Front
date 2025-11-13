@@ -57,15 +57,6 @@ const NavBar = ({ selectedCrimes, setSelectedCrimes }) => {
     else if (path.startsWith("/safety")) setOpenMenu("safety");
     else if (path.startsWith("/traffic")) setOpenMenu("traffic");
     else setOpenMenu(null);
-
-    // 자동 열기
-    if (path.startsWith("/stats/regional")) setOpenSubMenu("지역그래프");
-    else if (path.startsWith("/report")) {
-      setOpenMenu(openMenu === "report" ? null : "report");
-      setOpenSubMenu(openSubMenu === "범죄제보" ? null : "범죄제보");
-    } else {
-      setOpenSubMenu(null);
-    }
   }, [path]);
 
   const toggleMenu = (id) => {
