@@ -70,7 +70,7 @@ const NavBar = ({ selectedCrimes, setSelectedCrimes }) => {
     } else if (id === "traffic") {
       navigate("/traffic");
       setOpenMenu(openMenu === "traffic" ? null : "traffic");
-    } else if (id === "report") {
+    } else if (id === "report/crime") {
       setOpenMenu(openMenu === "report" ? null : "report");
     } else {
       const item = NAV_ITEMS.find((i) => i.id === id);
